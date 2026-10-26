@@ -8,7 +8,13 @@ export function clearSession() {
 }
 function authorizationHeaders() {
   // TODO FE-02: 메모리에 보관한 토큰을 Bearer 헤더로 보내세요.
-  return {};
+  if(!session.accessToken) {
+    return {}
+  }
+
+  return {
+    Authorization : `Bearer ${session.accessToken}`
+  };
 }
 export async function request(path, options = {}) {
   const response = await fetch(`/api${path}`, {
@@ -22,8 +28,19 @@ export async function request(path, options = {}) {
   const data = response.status === 204 ? null : await response.json();
   if (!response.ok) {
     // TODO FE-03: 401이면 메모리의 로그인 상태도 해제하세요.
+    if (response.status === 401) {
+      clearSession();
+    }
+
+    const authMessage = {
+      INVALID_CREDENTIALS: "이메일 또는 비밀번호를 확인해주세요.",
+      TOKEN_REQUIRED: "로그인이 필요합니다.",
+      INVALID_TOKEN: "유효하지 않은 토큰입니다. 다시 로그인해주세요.",
+      TOKEN_EXPIRED: "로그인이 만료되었습니다. 다시 로그인해주세요"
+    };
+
     const error = new Error(
-      data.message || data.code || `HTTP ${response.status}`,
+      authMessage[data.code] || data.message || data.code || `HTTP ${response.status}`,
     );
     error.status = response.status;
     error.code = data.code;
