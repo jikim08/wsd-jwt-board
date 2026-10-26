@@ -65,7 +65,11 @@ export async function login(email, password) {
 }
 export function canEdit(post) {
   // TODO FE-04: 로그인 사용자와 작성자를 비교하세요. 서버 검사도 반드시 필요합니다.
-  return true; // 시작 코드에서는 CRUD를 체험할 수 있도록 모두 표시합니다.
+  if (!session.user){
+    return false;
+  }
+
+  return session.user.id === post.authorId; // 시작 코드에서는 CRUD를 체험할 수 있도록 모두 표시합니다.
 }
 export const api = {
   list: () => request("/posts"),
