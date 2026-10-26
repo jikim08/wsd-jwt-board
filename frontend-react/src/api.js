@@ -1,3 +1,5 @@
+import { jsx } from "react/jsx-runtime";
+
 // TODO FE-01~04: 공통 API 명세와 구현 체크리스트를 보고 완성하세요.
 let session = { accessToken: "", user: null };
 export const getSession = () => session;
@@ -32,7 +34,17 @@ export async function request(path, options = {}) {
 export async function login(email, password) {
   // TODO FE-01: POST /auth/login → 응답의 토큰과 사용자 정보를 session에 저장.
   // request()를 이용할 수 있습니다. 성공하면 user를 반환하세요.
-  throw new Error("로그인 연결은 학생 구현 항목입니다. FE-01을 완성하세요.");
+  const data = await request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+
+  session = {
+    accessToken: data.accessToken,
+    user: data.user,
+  }
+
+  return session.user;
 }
 export function canEdit(post) {
   // TODO FE-04: 로그인 사용자와 작성자를 비교하세요. 서버 검사도 반드시 필요합니다.

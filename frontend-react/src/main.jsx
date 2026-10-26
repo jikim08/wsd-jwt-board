@@ -95,6 +95,7 @@ function App() {
                 <button
                   type="button"
                   className="secondary"
+                  disabled={!user || busy}
                   onClick={() => {
                     clearSession();
                     setUser(null);
