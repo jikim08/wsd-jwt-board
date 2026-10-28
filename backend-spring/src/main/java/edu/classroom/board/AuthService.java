@@ -108,7 +108,7 @@ public class AuthService {
       .issuer(issuer)                             //발급자 설정
       .audience().add(audience).and()             //사용 대상 지정
 
-      .expiration(Date.from(now.plusSeconds(ttl)))  //현재 시각에 유효시간 ttl을 더해 만료 시각을 성정
+      .expiration(Date.from(now.plusSeconds(ttl)))  //현재 시각에 유효시간 ttl을 더해 만료 시각을 설정
 
       .signWith(key, Jwts.SIG.HS256)              //비밀키로 서명, 알고리즘 지정
       .compact();                                 //header.payload.signature형태의 JWT문자열 반환

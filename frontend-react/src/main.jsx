@@ -21,6 +21,24 @@ function App() {
       setMessage(success);
     } catch (e) {
       setMessage(e.message);
+          // 서버에서 게시글이 없다고 응답한 경우 화면을 정리합니다.
+      if (e.status === 404 && e.code === "NOT_FOUND") {
+      // 없어진 글의 상세 화면을 닫습니다.
+      setSelected(null);
+
+      // 제목·내용을 비우고 수정 모드를 해제합니다.
+      reset();
+
+      try {
+        // 삭제된 글이 목록에서도 사라지도록 다시 조회합니다.
+        await refresh();
+      } catch (refreshError) {
+        // 목록 조회마저 실패해도 오류를 처리합니다.
+        setMessage(
+          `${e.message} 목록 갱신에도 실패했습니다: ${refreshError.message}`
+        );
+        }
+      }
     } finally {
       setUser(getSession().user);
       setBusy(false);
@@ -48,15 +66,15 @@ function App() {
   return (
     <main>
       <header>
-        <span className="eyebrow">WEB SERVICE DESIGN · STARTER</span>
-        <h1>우리의 기록</h1>
+        <span className="eyebrow">MUSIC JOURNAL</span>
+        <h1>음악 감상 게시판</h1>
         <p className="muted">
-          나만의 주제를 정하고, 로그인과 작성자 권한을 연결해 보세요.
+          좋아하는 곡과 그 순간의 감상을 기록하고 나눠보세요.
         </p>
       </header>
       <p className="banner">
-        시작 코드: 인증 미완성 · 글쓰기는 데모 작성자 Alice로 처리됩니다. 인증과
-        권한 검사를 완성한 뒤 안내 문구를 수정하세요.
+        감상 기록은 누구나 읽을 수 있습니다.
+        로그인하면 기록을 남길 수 있으며, 본인의 글만 수정·삭제할 수 있습니다.
       </p>
       <div role="status" className="message">
         {message}

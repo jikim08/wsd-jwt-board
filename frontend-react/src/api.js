@@ -7,7 +7,6 @@ export function clearSession() {
   session = { accessToken: "", user: null };
 }
 function authorizationHeaders() {
-  // TODO FE-02: 메모리에 보관한 토큰을 Bearer 헤더로 보내세요.
   if(!session.accessToken) {
     return {}
   }
